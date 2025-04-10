@@ -1,9 +1,22 @@
 from hari.prepare_dataset import prepare_haystacks_across_lengths_and_positions
-from hari.gpt4o import retrieve_needle
+from hari.model import Model
+from hari.judger import Judger
 from datasets import load_dataset
-import unicodedata
-import numpy as np
 from argparse import ArgumentParser
+import weave
+import os
+import json
+from dataclasses import dataclass, asdict
+
+
+@dataclass
+class Result:
+    model: str
+    context_length: int
+    depth_percent: int
+    needle: str
+    model_response: str
+    score: int
 
 
 def parse_args():
@@ -46,9 +59,30 @@ def parse_args():
     )
     parser.add_argument(
         "--use_weave",
-        action="store_true",
+        default=True,
         help="Use Weave for the retrieval",
     )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="gpt-4o-2024-11-20",
+        choices=["gpt-4o-2024-11-20", "gpt-4o-mini-2024-07-18"],
+        help="Model to use for the retrieval",
+    )
+    parser.add_argument(
+        "--judger_model",
+        type=str,
+        default="gpt-4o-2024-11-20",
+        choices=["gpt-4o-2024-11-20", "gpt-4o-mini-2024-07-18"],
+        help="Model to use for the judger",
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        default="result",
+        help="Output directory for the results",
+    )
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
@@ -62,24 +96,34 @@ if __name__ == "__main__":
     all_haystacks = prepare_haystacks_across_lengths_and_positions(
         ds, args.needle, lengths=[1024, 2048], depth=args.depth
     )
-
-    result_info = {}
     lengths = sorted(set([info["length"] for info in all_haystacks]))
     depths = sorted(set([info["depth"] for info in all_haystacks]))
+    model = Model(args.model)
+    judger = Judger(args.judger_model)
 
     # Generate 2D accuracy matrix
-    z_scores = np.zeros((len(depths), len(lengths)))
-    for i, depth in enumerate(depths):
-        for j, length in enumerate(lengths):
-            haystack = None
-            for info in all_haystacks:
-                if info["length"] == length and info["depth"] == depth:
-                    haystack = info["haystack"]
-                    break
-            retrieved = retrieve_needle(haystack, args.question)
-            print(f"Haystack Length: {length}, Depth: {depth}, Retrieved: {retrieved}")
-            # Normalize the retrieved string
-            retrieved = unicodedata.normalize("NFKC", retrieved)
-            # Normalize the needle string
-            accuracy = int(args.ground_truth in retrieved)
-            z_scores[i, j] = accuracy
+    results = []
+    for example in all_haystacks:
+        haystack = example["haystack"]
+        length = example["length"]
+        depth = example["depth"]
+        retrieved = model.retrieve_needle(haystack, args.question)
+        score = judger.judge_retrieval(retrieved, args.needle, args.question)
+        results.append(
+            Result(
+                model=args.model,
+                context_length=length,
+                depth_percent=depth,
+                needle=args.needle,
+                model_response=retrieved,
+                score=score,
+            )
+        )
+    # sort by context_length and depth_percent
+    results.sort(key=lambda x: (x.context_length, x.depth_percent))
+
+    output_path = os.path.join(args.output_dir, args.model, "result.jsonl")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w") as f:
+        for result in results:
+            f.write(json.dumps(asdict(result), ensure_ascii=False) + "\n")

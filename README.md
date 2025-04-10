@@ -10,8 +10,15 @@ $ uv sync
 
 Run the evaluation:
 ```bash
-$ python src/hari/evaluate.py
+$ python src/hari/evaluate.py --model gpt-4o-2024-11-20
 ```
+
+Plot the result:
+```bash
+$ python src/hari/plot.py
+```
+
+![heatmap](result/gpt-4o-2024-11-20/heatmap.png)
 
 
 
