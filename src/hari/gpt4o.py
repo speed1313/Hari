@@ -33,43 +33,46 @@ def retrieve_needle(haystack: str, retrieval_question: str) -> str:
     return response.choices[0].message.content
 
 
-if __name__ == "__main__":
-    from hari.prepare_dataset import prepare_haystacks_across_lengths_and_positions
-    from datasets import load_dataset
+def judge_retrieval(retrieval: str, needle: str, question: str) -> int:
+    """
+    Judge the retrieval between 1 to 10
+    """
+    response = client.chat.completions.create(
+        model="gpt-4o-2024-11-20",
+        messages=[
+            {"role": "system", "content": "You are a helpful AI Judger"},
+            {
+                "role": "user",
+                "content": f"""Below is a fact and a question:
+                Fact: {needle},
+                Question: {question},
+                And below is a retrieval from the document: {retrieval},
+                Please judge the retrieval based on the fact and question.
+                Give a score between 1 to 5, where 1 means the retrieval is completely wrong and 5 means the retrieval is completely correct. Don't give any explanation.""",
+            },
+        ],
+        max_tokens=128,
+        temperature=0.0,
+    )
+    score = int(response.choices[0].message.content.strip())
+    print(f"Score: {score}")
+    assert score >= 1 and score <= 5, "Score should be between 1 and 5"
+    return score
 
-    ds = load_dataset("wikimedia/wikipedia", "20231101.ja", split="train")
-    ds = ds.shuffle(seed=42)
+
+def test_judge_retrieval():
+    # only do test if the env variable is set
+    if not os.getenv("AZURE_OPENAI_KEY"):
+        print("Skipping test_judge_retrieval because AZURE_OPENAI_KEY is not set")
+        return
     question = "京都でおすすめの観光地はどこですか？"
     needle = "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。"
-    ground_truth = "ロームシアター京都の３階にあるラウンジ"
-    # Prepare haystacks across lengths and positions
-    all_haystacks = prepare_haystacks_across_lengths_and_positions(
-        ds, needle, lengths=[1024, 2048]
-    )
-
-    retrieval_question = "京都でおすすめの観光地はどこですか？"
-    result_info = {}
-
-    import unicodedata
-    import numpy as np
-
-    lengths = sorted(set([info["length"] for info in all_haystacks]))
-    depths = sorted(set([info["depth"] for info in all_haystacks]))
-
-    # Generate 2D accuracy matrix
-    z_scores = np.zeros((len(depths), len(lengths)))
-    for i, depth in enumerate(depths):
-        for j, length in enumerate(lengths):
-            haystack = None
-            for info in all_haystacks:
-                if info["length"] == length and info["depth"] == depth:
-                    haystack = info["haystack"]
-                    break
-            retrieved = retrieve_needle(haystack, question)
-            print(f"Haystack Length: {length}, Depth: {depth}, Retrieved: {retrieved}")
-            # Normalize the retrieved string
-            retrieved = unicodedata.normalize("NFKC", retrieved)
-            # Normalize the needle string
-            ground_truth = unicodedata.normalize("NFKC", ground_truth)
-            accuracy = int(ground_truth in retrieved)
-            z_scores[i, j] = accuracy
+    retrieval = "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。"
+    assert judge_retrieval(retrieval, needle, question) == 5
+    retrieval = "ロームシアター京都の３階にあるラウンジです。"
+    assert judge_retrieval(retrieval, needle, question) == 5
+    retrieval = "金閣寺です。"
+    assert judge_retrieval(retrieval, needle, question) == 1
+    retrieval = "ロームシアター京都です。"
+    score = judge_retrieval(retrieval, needle, question)
+    assert score >= 1 and score < 5, "Score should be between 1 and 5"
