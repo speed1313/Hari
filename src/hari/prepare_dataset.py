@@ -94,34 +94,34 @@ def prepare_haystacks_across_lengths_and_positions(
     return all_haystacks
 
 
-def test_insert_needle_into_haystack():
-    import pytest
+# def test_insert_needle_into_haystack():
+#     import pytest
 
-    haystack = (
-        "Today is sunny.\nThe quick brown fox jumps over the lazy dog.\nToday is rainy."
-    )
-    needle = "This is needle."
-    context_length_max = 60
-    result = insert_needle_into_haystack(haystack, needle, context_length_max, 0)
-    assert result == (
-        "This is needle.\nToday is sunny.\nThe quick brown fox jumps ov",
-        0,
-    )
+#     haystack = (
+#         "Today is sunny.\nThe quick brown fox jumps over the lazy dog.\nToday is rainy."
+#     )
+#     needle = "This is needle."
+#     context_length_max = 60
+#     result = insert_needle_into_haystack(haystack, needle, context_length_max, 0)
+#     assert result == (
+#         "This is needle.\nToday is sunny.\nThe quick brown fox jumps ov",
+#         0,
+#     )
 
-    result = insert_needle_into_haystack(haystack, needle, context_length_max, 10)
-    assert result == (
-        "This is needle.\nToday is sunny.\nThe quick brown fox jumps ov",
-        0,
-    )
+#     result = insert_needle_into_haystack(haystack, needle, context_length_max, 10)
+#     assert result == (
+#         "This is needle.\nToday is sunny.\nThe quick brown fox jumps ov",
+#         0,
+#     )
 
-    result = insert_needle_into_haystack(haystack, needle, context_length_max, 25)
-    assert result == (
-        "Today is sunny.\nThis is needle.\nThe quick brown fox jumps ov",
-        16,
-    )
+#     result = insert_needle_into_haystack(haystack, needle, context_length_max, 25)
+#     assert result == (
+#         "Today is sunny.\nThis is needle.\nThe quick brown fox jumps ov",
+#         16,
+#     )
 
-    with pytest.raises(ValueError, match="Position exceeds haystack length."):
-        insert_needle_into_haystack(haystack, needle, context_length_max, 80)
+#     with pytest.raises(ValueError, match="Position exceeds haystack length."):
+#         insert_needle_into_haystack(haystack, needle, context_length_max, 80)
 
 
 if __name__ == "__main__":

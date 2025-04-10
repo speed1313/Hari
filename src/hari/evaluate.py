@@ -90,14 +90,13 @@ if __name__ == "__main__":
     if args.use_weave:
         weave.init("hari")
 
-    ds = load_dataset("wikimedia/wikipedia", "20231101.ja", split="train")
-    ds = ds.shuffle(seed=42)
+    ds = load_dataset("wikimedia/wikipedia", "20231101.ja", split="train").shuffle(
+        seed=42
+    )
     # Prepare haystacks across lengths and positions
     all_haystacks = prepare_haystacks_across_lengths_and_positions(
         ds, args.needle, lengths=[1024, 2048], depth=args.depth
     )
-    lengths = sorted(set([info["length"] for info in all_haystacks]))
-    depths = sorted(set([info["depth"] for info in all_haystacks]))
     model = Model(args.model)
     judger = Judger(args.judger_model)
 
