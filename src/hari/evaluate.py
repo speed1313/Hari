@@ -1,5 +1,5 @@
 from hari.prepare_dataset import prepare_haystacks_across_lengths_and_positions
-from hari.model import Model
+from hari.model.gpt4o import GPT4o
 from hari.judger import Judger
 from datasets import load_dataset
 from argparse import ArgumentParser
@@ -66,8 +66,12 @@ def parse_args():
         "--model",
         type=str,
         default="gpt-4o-2024-11-20",
-        choices=["gpt-4o-2024-11-20", "gpt-4o-mini-2024-07-18"],
         help="Model to use for the retrieval",
+    )
+    parser.add_argument(
+        "--model_type",
+        type=str,
+        default="gpt4o",
     )
     parser.add_argument(
         "--judger_model",
@@ -97,7 +101,16 @@ if __name__ == "__main__":
     all_haystacks = prepare_haystacks_across_lengths_and_positions(
         ds, args.needle, lengths=[1024, 2048], depth=args.depth
     )
-    model = Model(args.model)
+    model = None
+    if args.model_type == "vLLM":
+        from hari.model.vLLM import VLLM
+
+        model = VLLM(args.model)
+    elif args.model_type == "gpt4o":
+        from hari.model.gpt4o import GPT4o
+
+        model = GPT4o(args.model)
+
     judger = Judger(args.judger_model)
 
     # Generate 2D accuracy matrix

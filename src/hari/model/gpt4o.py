@@ -1,8 +1,9 @@
 import os
 from openai import AzureOpenAI
+from hari.model.model import Model
 
 
-class Model:
+class GPT4o(Model):
     def __init__(self, model_name="gpt-4o-2024-11-20"):
         self.model_name = model_name
         self.client = AzureOpenAI(
@@ -25,7 +26,7 @@ class Model:
                     "content": f"{retrieval_question} Don't give information outside the document or repeat your findings",
                 },
             ],
-            max_tokens=1024,
+            max_tokens=256,
             temperature=0.0,
         )
         return response.choices[0].message.content

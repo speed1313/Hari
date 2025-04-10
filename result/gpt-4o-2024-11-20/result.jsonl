@@ -2,7 +2,7 @@
 {"model": "gpt-4o-2024-11-20", "context_length": 1024, "depth_percent": 0.25, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
 {"model": "gpt-4o-2024-11-20", "context_length": 1024, "depth_percent": 0.5, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
 {"model": "gpt-4o-2024-11-20", "context_length": 1024, "depth_percent": 0.75, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
-{"model": "gpt-4o-2024-11-20", "context_length": 1024, "depth_percent": 1.0, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "ロームシアター京都の3階にあるラウンジがおすすめです。", "score": 5}
+{"model": "gpt-4o-2024-11-20", "context_length": 1024, "depth_percent": 1.0, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
 {"model": "gpt-4o-2024-11-20", "context_length": 2048, "depth_percent": 0.0, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
 {"model": "gpt-4o-2024-11-20", "context_length": 2048, "depth_percent": 0.25, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
 {"model": "gpt-4o-2024-11-20", "context_length": 2048, "depth_percent": 0.5, "needle": "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。", "model_response": "京都でおすすめの観光地は、ロームシアター京都の3階にあるラウンジです。", "score": 5}
