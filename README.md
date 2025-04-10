@@ -21,6 +21,11 @@ $ python src/hari/plot.py
 ![heatmap](result/gpt-4o-2024-11-20/heatmap.png)
 
 
+# TODO
+- [ ] Length should be calculated using tokenizers, not codepoint.
+- [ ] Add more models.
+- [ ] Add more Judgers.
+- [ ] More Flexible dataset.
 
 
 # References
