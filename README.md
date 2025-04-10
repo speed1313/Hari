@@ -1,6 +1,6 @@
 # Hari
 
-Hari is the Japanese version of [Needle In A Haystack]((https://github.com/gkamradt/LLMTest_NeedleInAHaystack)), a benchmark for evaluating long-context capabilities of large language models (LLMs).
+Hari is the Japanese version of [Needle In A Haystack](https://github.com/gkamradt/LLMTest_NeedleInAHaystack), a benchmark for evaluating long-context capabilities of large language models (LLMs).
 
 # Overview
 
