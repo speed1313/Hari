@@ -24,8 +24,9 @@ $ uv sync
 
 Run the evaluation:
 ```bash
-$ python src/hari/evaluate.py --model gpt-4o-2024-11-20
+$ python src/hari/evaluate.py --model gpt-4o-2024-11-20 --needle "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。" --question "京都でおすすめの観光地はどこですか？"
 ```
+
 
 Plot the result:
 ```bash
