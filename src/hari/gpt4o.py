@@ -3,7 +3,6 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 import weave
 
-weave.init("Hari")
 load_dotenv()
 
 client = AzureOpenAI(

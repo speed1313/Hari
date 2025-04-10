@@ -44,10 +44,17 @@ def parse_args():
         default="京都でおすすめの観光地はどこですか？",
         help="Question to ask the model",
     )
+    parser.add_argument(
+        "--use_weave",
+        action="store_true",
+        help="Use Weave for the retrieval",
+    )
 
 
 if __name__ == "__main__":
     args = parse_args()
+    if args.use_weave:
+        weave.init("hari")
 
     ds = load_dataset("wikimedia/wikipedia", "20231101.ja", split="train")
     ds = ds.shuffle(seed=42)
