@@ -38,6 +38,10 @@ gpt-4o-2024-11-20
 
 ![heatmap](result/gpt-4o-2024-11-20/heatmap.png)
 
+
+gemma-3-4b-it
+![heatmap](result/google/gemma-3-4b-it/heatmap.png)
+
 Qwen2.5-7B-Instruct
 ![heatmap](result/Qwen/Qwen2.5-7B-Instruct/heatmap.png)
 
