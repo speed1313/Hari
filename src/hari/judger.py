@@ -31,8 +31,8 @@ class Judger:
                     Here is the information:
                     Question: {question},
                     Fact: {needle},
-                    retrieval: {retrieval}
-                    """,
+                    retrieval: {retrieval},
+                    Score: """,
                 },
             ],
             max_tokens=128,
