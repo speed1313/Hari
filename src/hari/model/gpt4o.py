@@ -1,6 +1,7 @@
 import os
 from openai import AzureOpenAI
-from hari.model.model import Model
+from hari.model.model import Model, INSTRUCTION_FORMAT
+from loguru import logger
 
 
 class GPT4o(Model):
@@ -22,16 +23,9 @@ class GPT4o(Model):
                 },
                 {
                     "role": "user",
-                    "content": f"""You will be given a long document of text. Within the document, there is a single sentence that is needed to answer the question at the end.
-            Read the entire document carefully, then answer the question as accurately as possible. Please do not include any additional information or context outside of the passage.
-
-            Document:
-            { haystack }
-
-            Question:
-            { retrieval_question }
-
-            Answer:""",
+                    "content": INSTRUCTION_FORMAT.format(
+                        haystack=haystack, retrieval_question=retrieval_question
+                    ),
                 },
             ],
             max_tokens=256,
@@ -43,7 +37,7 @@ class GPT4o(Model):
 def test_retrieve_needle():
     # only do test if the env variable is set
     if not os.getenv("AZURE_OPENAI_KEY"):
-        print("Skipping test_retrieve_needle because AZURE_OPENAI_KEY is not set")
+        logger.info("Skipping test_retrieve_needle because AZURE_OPENAI_KEY is not set")
         return
     model = Model()
     haystack = "京都でおすすめの観光地は、ロームシアター京都の３階にあるラウンジです。"

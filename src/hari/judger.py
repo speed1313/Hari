@@ -1,5 +1,6 @@
 import os
 from openai import AzureOpenAI
+from loguru import logger
 
 
 class Judger:
@@ -21,19 +22,24 @@ class Judger:
                 {"role": "system", "content": "You are a helpful AI Judger"},
                 {
                     "role": "user",
-                    "content": f"""Below is a fact and a question:
-                    Fact: {needle},
+                    "content": f"""You are given a fact and a question. You also have a retrieval from the document.
+                    Please judge the retrieval based on on the fact and question.
+                    Even the retrieval seems good in general, it may not be correct.
+                    If the retrieval is completely correct, give a score of 5.
+                    If the retrieval is completely wrong, give a score of 1.
+                    Don't give any explanation.
+                    Here is the information:
                     Question: {question},
-                    And below is a retrieval from the document: {retrieval},
-                    Please judge the retrieval based on the fact and question.
-                    Give a score between 1 to 5, where 1 means the retrieval is completely wrong and 5 means the retrieval is completely correct. Don't give any explanation.""",
+                    Fact: {needle},
+                    retrieval: {retrieval}
+                    """,
                 },
             ],
             max_tokens=128,
             temperature=0.0,
         )
         score = int(response.choices[0].message.content.strip())
-        print(f"Score: {score}")
+        logger.info(f"Judged retrieval: {retrieval} with score: {score}")
         assert score >= 1 and score <= 5, "Score should be between 1 and 5"
         return score
 
@@ -41,7 +47,7 @@ class Judger:
 def test_judge_retrieval():
     # only do test if the env variable is set
     if not os.getenv("AZURE_OPENAI_KEY"):
-        print("Skipping test_judge_retrieval because AZURE_OPENAI_KEY is not set")
+        logger.info("Skipping test_judge_retrieval because AZURE_OPENAI_KEY is not set")
         return
     judger = Judger()
     question = "京都でおすすめの観光地はどこですか？"

@@ -7,6 +7,7 @@ import weave
 import os
 import json
 from dataclasses import dataclass, asdict
+from loguru import logger
 
 
 @dataclass
@@ -121,6 +122,9 @@ if __name__ == "__main__":
         length = example["length"]
         depth = example["depth"]
         retrieved = model.retrieve_needle(haystack, args.question)
+        logger.info(
+            f"Model: {args.model}, Length: {length}, Depth: {depth}, Retrieved: {retrieved}"
+        )
         score = judger.judge_retrieval(retrieved, args.needle, args.question)
         results.append(
             Result(

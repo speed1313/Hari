@@ -4,6 +4,7 @@ import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from argparse import ArgumentParser
 import os
+from loguru import logger
 
 # font size
 plt.rcParams.update({"font.size": 14})
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     pivot_table = pivot_table.pivot(
         index="depth_percent", columns="context_length", values="score"
     )
-    print(pivot_table)
+    logger.info(f"Pivot table: {pivot_table}")
 
     cmap = LinearSegmentedColormap.from_list(
         "custom_cmap", ["#F0496E", "#EBB839", "#0CD79F"]

@@ -12,6 +12,7 @@ To test performance under diverse conditions, the needle is inserted at various 
 
 Hari differs from the original benchmark in the following ways:
 - Both the haystack and the needle are in Japanese.
+- Modified instructional prompts to make it easier to understand the questions for the model.
 - The set of sentence boundary tokens is expanded to {'。', '\n', '.', '!', '?'} instead of just '.'.
 
 

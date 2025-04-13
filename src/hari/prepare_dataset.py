@@ -1,5 +1,6 @@
 from datasets import load_dataset
 import numpy as np
+from loguru import logger
 
 
 def build_haystack(ds, context_length_max: int) -> str:
@@ -81,8 +82,8 @@ def prepare_haystacks_across_lengths_and_positions(
             new_haystack, insert_at = insert_needle_into_haystack(
                 haystack, needle, length, abs_pos
             )
-            print(
-                f"Haystack Length: {len(new_haystack)}, max_length: {length}, relative_position: {rel_pos}, absolute_position: {insert_at}"
+            logger.info(
+                f"Haystack length: {length}, Relative position: {rel_pos}, Insert at: {insert_at}"
             )
             all_haystacks.append(
                 {
