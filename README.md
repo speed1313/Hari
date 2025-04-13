@@ -34,8 +34,12 @@ Plot the result:
 $ python src/hari/plot.py
 ```
 
+gpt-4o-2024-11-20
+
 ![heatmap](result/gpt-4o-2024-11-20/heatmap.png)
 
+Qwen2.5-7B-Instruct
+![heatmap](result/Qwen/Qwen2.5-7B-Instruct/heatmap.png)
 
 # TODO
 - [ ] Length should be calculated using tokenizers, not codepoint.
