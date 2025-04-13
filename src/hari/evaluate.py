@@ -22,28 +22,10 @@ class Result:
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument(
-        "--context_length_max",
-        type=int,
-        default=2048,
-        help="Maximum context length for the haystack",
-    )
-    parser.add_argument(
-        "--context_length_min",
-        type=int,
-        default=1024,
-        help="Minimum context length for the haystack",
-    )
-    parser.add_argument(
-        "--interval",
-        type=int,
-        default=256,
-        help="Interval for the context length",
-    )
-    parser.add_argument(
-        "--depth",
+        "--depth_steps",
         type=int,
         default=5,
-        help="Depth for the haystack",
+        help="Number of depth steps when inserting the needle into the document",
     )
     parser.add_argument(
         "--needle",
@@ -69,11 +51,6 @@ def parse_args():
         help="Model to use for the retrieval",
     )
     parser.add_argument(
-        "--model_type",
-        type=str,
-        default="gpt4o",
-    )
-    parser.add_argument(
         "--judger_model",
         type=str,
         default="gpt-4o-2024-11-20",
@@ -86,6 +63,24 @@ def parse_args():
         default="result",
         help="Output directory for the results",
     )
+    parser.add_argument(
+        "--min_context_length",
+        type=int,
+        default=1024,
+        help="Minimum context length for the haystack",
+    )
+    parser.add_argument(
+        "--max_context_length",
+        type=int,
+        default=16384,
+        help="Maximum context length for the haystack",
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=1024,
+        help="Interval for the context length",
+    )
     return parser.parse_args()
 
 
@@ -97,20 +92,26 @@ if __name__ == "__main__":
     ds = load_dataset("wikimedia/wikipedia", "20231101.ja", split="train").shuffle(
         seed=42
     )
+    lengths = list(
+        range(
+            args.min_context_length,
+            args.max_context_length + 1,
+            args.interval,
+        )
+    )
     # Prepare haystacks across lengths and positions
     all_haystacks = prepare_haystacks_across_lengths_and_positions(
-        ds, args.needle, lengths=[1024, 2048], depth=args.depth
+        ds, args.needle, lengths=lengths, depth_steps=args.depth_steps
     )
     model = None
-    if args.model_type == "vLLM":
-        from hari.model.vLLM import VLLM
-
-        model = VLLM(args.model)
-    elif args.model_type == "gpt4o":
+    if args.model.startswith("gpt-4o"):
         from hari.model.gpt4o import GPT4o
 
         model = GPT4o(args.model)
+    else:
+        from hari.model.vLLM import VLLM
 
+        model = VLLM(args.model)
     judger = Judger(args.judger_model)
 
     # Generate 2D accuracy matrix

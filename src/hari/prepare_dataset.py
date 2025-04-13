@@ -63,19 +63,21 @@ def prepare_various_haystack(
 
 
 def prepare_haystacks_across_lengths_and_positions(
-    ds, needle: str, lengths: list = [1024, 2048, 4096, 8192, 16384], depth: int = 5
+    ds,
+    needle: str,
+    lengths: list = [1024, 2048, 4096, 8192, 16384],
+    depth_steps: int = 5,
 ) -> list:
     """
     Create haystacks of various lengths with needle inserted at various relative positions.
     """
-    relative_positions = np.linspace(0, 1, depth)  # y-axis
+    relative_positions = np.linspace(0, 1, depth_steps)  # y-axis
     all_haystacks = []
 
     for length in lengths:
         haystack = build_haystack(ds, length)
         for rel_pos in relative_positions:
             abs_pos = int(length * rel_pos)
-
             new_haystack, insert_at = insert_needle_into_haystack(
                 haystack, needle, length, abs_pos
             )

@@ -18,12 +18,20 @@ class GPT4o(Model):
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful AI bot that answers questions for a user. Keep your response short and direct",
+                    "content": "You are a helpful AI assistant that can retrieve information from a document.",
                 },
-                {"role": "user", "content": f"Below is a document: {haystack}"},
                 {
                     "role": "user",
-                    "content": f"{retrieval_question} Don't give information outside the document or repeat your findings",
+                    "content": f"""You will be given a long document of text. Within the document, there is a single sentence that is needed to answer the question at the end.
+            Read the entire document carefully, then answer the question as accurately as possible. Please do not include any additional information or context outside of the passage.
+
+            Document:
+            { haystack }
+
+            Question:
+            { retrieval_question }
+
+            Answer:""",
                 },
             ],
             max_tokens=256,
