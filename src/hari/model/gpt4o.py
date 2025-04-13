@@ -15,6 +15,12 @@ class GPT4o(Model):
         )
         if model_name.startswith("gpt-4o"):
             self.tokenizer = tiktoken.encoding_for_model("gpt-4o")
+        elif model_name.startswith("gpt-4"):
+            self.tokenizer = tiktoken.encoding_for_model("gpt-4")
+        elif model_name.startswith("o1"):
+            self.tokenizer = tiktoken.encoding_for_model("o1")
+        elif model_name.startswith("o3"):
+            self.tokenizer = tiktoken.encoding_for_model("o3")
         else:
             raise ValueError(f"Model {model_name} is not supported. Please use gpt-4o.")
 
