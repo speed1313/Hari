@@ -2,6 +2,7 @@ import os
 from openai import AzureOpenAI
 from hari.model.model import Model, INSTRUCTION_FORMAT
 from loguru import logger
+import tiktoken
 
 
 class GPT4o(Model):
@@ -12,6 +13,10 @@ class GPT4o(Model):
             api_version="2023-05-15",
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
         )
+        if model_name.startswith("gpt-4o"):
+            self.tokenizer = tiktoken.encoding_for_model("gpt-4o")
+        else:
+            raise ValueError(f"Model {model_name} is not supported. Please use gpt-4o.")
 
     def retrieve_needle(self, haystack: str, retrieval_question: str) -> str:
         response = self.client.chat.completions.create(
@@ -32,6 +37,14 @@ class GPT4o(Model):
             temperature=0.0,
         )
         return response.choices[0].message.content
+
+    def encode(self, text: str) -> list[int]:
+        """Encode the text using the tokenizer."""
+        return self.tokenizer.encode(text)
+
+    def decode(self, tokens: list) -> str:
+        """Decode the tokens using the tokenizer."""
+        return self.tokenizer.decode(tokens)
 
 
 def test_retrieve_needle():
